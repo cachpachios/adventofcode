@@ -44,7 +44,7 @@ for fold in folds:
 for row in map:
     print("".join(["#" if x else "." for x in row]))
 
-answer = "PZEHRAER"
+answer = input("Answer: ")
 
 print("Answer:", answer)
 
