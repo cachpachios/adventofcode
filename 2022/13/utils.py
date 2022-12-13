@@ -39,6 +39,8 @@ def parse_split(lines: List[str], seperator: str = " ", parser: Callable = lambd
 def parse_comma(lines: List[str], parser: Callable = int) -> List[List[Any]]:
     return parse_split(lines, seperator = ",", parser = parser)
 
+def flatten(lst: List[List[Any]]) -> List[Any]:
+    return [item for sublist in lst for item in sublist]
 
 def parse_dict(lines: List[str], seperator: str = ":", value_parser: Callable = lambda x: x, key_parser: Callable = lambda x: x) -> dict:
     return {key_parser(line.split(seperator)[0]): value_parser(line.split(seperator)[1:]) if len(line.split(seperator))>2 else value_parser(line.split(seperator)[1]) for line in lines}
