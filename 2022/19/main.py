@@ -57,7 +57,7 @@ for block in blocks:
 print(blueprints)
 #pbars = [tqdm(position=i, desc=f"i={i+1}") for i in range(23)]
 
-MAX_TIME = 24
+MAX_TIME = 32
 
 #pbars = [tqdm(position=i+1, desc=f"i={i+1}") for i in range(MAX_TIME)]
 GEODE = ii["geode"]
@@ -76,7 +76,7 @@ def maxgeode(i, incr, stuff, best_geodes, blueprints: List[RobotBP], needed, mem
         return stuff[GEODE], (incr, stuff)
     #pbars[i].update(1)
     
-    if best_geodes[i] > stuff[GEODE]:
+    if stuff[GEODE] + incr[GEODE]*(MAX_TIME-i-1) < best_geodes[i]:
         return -1, None
     
     key = (i, ','.join(str(x) for x in incr), ','.join(str(x) for x in stuff))
@@ -104,6 +104,7 @@ def maxgeode(i, incr, stuff, best_geodes, blueprints: List[RobotBP], needed, mem
         if wait_time >= 0 and wait_time + i + 1 < MAX_TIME:
             new_incr = incr + bp.produces
             new_stuff = stuff - bp.costs + (wait_time+1)*incr
+            assert (new_stuff >= 0).all()
             new_i = i + wait_time + 1
             #print(i+1, wait_time, new_i+1)
             #print(stuff,new_stuff)
@@ -131,7 +132,7 @@ with Pool(min([16, len(blueprints)])) as p:
 print(geo_count)
 
     
-answer = product(geo_count)
+answer = product([x[0] for x in geo_count])
 print("Answer", answer)
 
 if answer and "-pr" in sys.argv:
