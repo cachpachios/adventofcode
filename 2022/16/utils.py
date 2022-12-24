@@ -7,7 +7,7 @@ from datetime import datetime
 
 CURRENT_YEAR = int(datetime.now().year)
 CURRENT_DAY = int(datetime.now().day)
-AOC_COOKIE = os.environ["AOC_COOKIE"] # Fail if missing cookie
+AOC_COOKIE = None# os.environ["AOC_COOKIE"] # Fail if missing cookie
 
 def read(path, parser: Callable = lambda x: x, strip = True) -> List[str]:
     with open(path, "r") as f:
@@ -95,6 +95,12 @@ def find(s, pattern):
     return re.findall(pattern, s)
 
 ## Math
+
+def argmax(iterable):
+    return max(enumerate(iterable), key=lambda x: x[1])[0]
+
+def argmin(iterable):
+    return min(enumerate(iterable), key=lambda x: x[1])[0]
 
 def sign(x):
     return (x > 0) - (x < 0)

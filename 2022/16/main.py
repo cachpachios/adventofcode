@@ -7,6 +7,8 @@ from collections import Counter, defaultdict
 from itertools import combinations, permutations, combinations_with_replacement
 from dataclasses import dataclass
 
+from functools import cache
+
 INPUT_FILE = "input.txt" if "-pr" in sys.argv else "test.txt"
 file = read(INPUT_FILE)
 
@@ -32,55 +34,86 @@ for l in file:
 @dataclass
 class Path:
     ts: int
-    path: List[str]
+    curr: str
+    curr_el: str
     pressure: int
     open: List[str]
+    fr: int
 
-    def curr(self):
-        return self.path[-1]
+paths = [Path(0, 'AA', 'AA', 0, [], 0)]
 
-paths = [Path(0, ['AA'], 0, [])]
+max_p = {i:-1 for i in range(27)}
+max_fr = {i:-1 for i in range(27)}
 
-max_p = 0
-max_fr = 0
+max_i = 0
 
-for i in tqdm(range(26), miniters=1):
-    new_paths = []
-    max_fr = max([sum([pipes[k].fr for k in path.open]) for path in paths])
-    print(len(paths), max_p, max_fr, max_p + max_fr*(30-i))
-    for i, path in enumerate(paths):
-        path.ts += 1
-                
-        for k in path.open: # Add pressure to path
-            path.pressure += pipes[k].fr
-        max_p = path.pressure if path.pressure > max_p else max_p
-        
-        
-        if path.ts > 9:
-            if path.pressure < max_p*0.8:
-                continue
-            if path.ts > 20 and sum([pipes[k].fr for k in path.open]) < max_fr*0.8:
-                continue
-            # Filter stuff...
-        
-        if path.curr() not in path.open:
-            stays = Path(path.ts, path.path, path.pressure, path.open.copy() + [path.curr()])
-            new_paths.append(stays)
-        else:
-            new_paths.append(path)
-        if len(path.open) < len(pipes):
-            moved = [
-                    Path(path.ts, path.path.copy() + [v], path.pressure, path.open)
-                    for v in pipes[path.curr()].n
-                ]
-            new_paths.extend(moved)
-        
-    paths = new_paths
+TQDM = tqdm(desc="Exploring")
+TQDM_R = tqdm(desc="Rejected", position=1)
+TQDM_B = tqdm(desc="Bases", position=2)
+
+@cache
+def explore(i, a,b, pressure, open, fr):
+    global max_i, max_p, max_fr
     
-best_path = max(paths, key=lambda x: x.pressure)
-print(best_path)
+    if i == 1:
+        TQDM_B.update(1)
+    
+    last_maxp = max_p[i]
+    
+    max_p[i] = max(last_maxp, pressure)
+    max_fr[i] = max(max_fr[i], fr)
+    
+    if i == 26:
+        if pressure > last_maxp:
+            tqdm.write(f"{i}: {pressure} {fr} {open}\t{max_p}")
+            tqdm.write(f"{explore.cache_info()}")
+        return
+    pressure = pressure + fr
+    
+    
+    if i > 20:
+        if pressure < max_p[i]:
+            TQDM_R.update(1)
+            return
+        if fr < max_fr[i]*0.95:
+            TQDM_R.update(1)
+            return
+    elif i > 14:
+        if pressure < max_p[i]*0.95:
+            TQDM_R.update(1)
+            return
+        if fr < max_fr[i]*0.9:
+            TQDM_R.update(1)
+            return
+    elif i > 6:
+        if pressure < max_p[i]*0.90:
+            TQDM_R.update(1)
+            return
+        
+    TQDM.update(1)
+    
+    # Curr opens
+    if a+',' not in open:
+        # El moves    
+        for v in pipes[a].n:
+            explore(i+1, v, b, pressure, open + a+',', fr + pipes[a].fr)
+    
+    # EL opens
+    if b+',' not in open and a != b:
+        # Curr moves    
+        for v in pipes[b].n:
+            explore(i+1, v, a, pressure, open + b+',', fr + pipes[b].fr)
+    
+    # Both moves:
+    for curr in pipes[a].n:
+        for curr_el in pipes[b].n:
+            explore(i+1, curr, curr_el, pressure, open, fr)
 
-answer = best_path.pressure
+explore(0, 'AA', 'AA', 0, "", 0)
+
+print(max_p)
+answer = max(max_p.values())
+
 print("Answer", answer)
 
 if answer and "-pr" in sys.argv:
