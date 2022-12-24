@@ -26,8 +26,8 @@ class Op:
 
 mnks = {}
 
-for input in file:
-    rs = input.split(":")
+for _in in file:
+    rs = _in.split(":")
     name = rs[0]
     yell = rs[1].strip()
     if yell.isnumeric():
@@ -74,6 +74,8 @@ for name, v in mnks.items():
 a = dfnk(mnks["root"].a)
 b = dfnk(mnks["root"].b)
 
+print(a)
+print(b)
 
 from sympy.parsing.sympy_parser import parse_expr
 
