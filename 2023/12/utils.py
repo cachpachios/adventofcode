@@ -100,6 +100,9 @@ def find(s, pattern):
 def flatten2(a):
     return [x for y in a for x in y]
 
+def vec_starts_with(a, b):
+    return all(a[i] == b[i] for i in range(len(b)))
+
 ## Math
 
 def sign(x):
