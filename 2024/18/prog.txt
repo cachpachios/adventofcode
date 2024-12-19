@@ -1,0 +1,123 @@
+B = (A % 8) ^ 3
+B = B ^ (A >> 3) ^ 5
+A = A >> 3
+out += B % 8
+
+
+B = (A % 8) ^ (A >> ((A % 8) ^ 3)) ^ 6
+out += B % 8
+A = A >> 3
+
+
+if A != 0 goto 0
+GOTO EXECUTED
+B = A % 8
+B = B ^ 3
+C = A // 2**B
+B = B ^ C
+A = A // 2**3
+B = B ^ 5
+out += B % 8
+
+if A != 0 goto 0
+GOTO EXECUTED
+B = A % 8
+B = B ^ 3
+C = A // 2**B
+B = B ^ C
+A = A // 2**3
+B = B ^ 5
+out += B % 8
+
+if A != 0 goto 0
+GOTO EXECUTED
+B = 
+A
+% 8
+B = B ^ 3
+C = A // 2**
+B
+B = B ^ C
+A = A // 2**
+3
+B = B ^ 5
+out += 
+B
+% 8
+if A != 0 goto 0
+GOTO EXECUTED
+B = 
+A
+% 8
+B = B ^ 3
+C = A // 2**
+B
+B = B ^ C
+A = A // 2**
+3
+B = B ^ 5
+out += 
+B
+% 8
+if A != 0 goto 0
+GOTO EXECUTED
+B = 
+A
+% 8
+B = B ^ 3
+C = A // 2**
+B
+B = B ^ C
+A = A // 2**
+3
+B = B ^ 5
+out += 
+B
+% 8
+if A != 0 goto 0
+GOTO EXECUTED
+B = 
+A
+% 8
+B = B ^ 3
+C = A // 2**
+B
+B = B ^ C
+A = A // 2**
+3
+B = B ^ 5
+out += 
+B
+% 8
+if A != 0 goto 0
+GOTO EXECUTED
+B = 
+A
+% 8
+B = B ^ 3
+C = A // 2**
+B
+B = B ^ C
+A = A // 2**
+3
+B = B ^ 5
+out += 
+B
+% 8
+if A != 0 goto 0
+GOTO EXECUTED
+B = 
+A
+% 8
+B = B ^ 3
+C = A // 2**
+B
+B = B ^ C
+A = A // 2**
+3
+B = B ^ 5
+out += 
+B
+% 8
+if A != 0 goto 0
+Answer 0
